@@ -91,16 +91,15 @@ select r.r_name,
 from orders as o 
 join resturants as r
 on r.r_id = o.r_id
-group by r.r_name, o.user_id,o.r_id
-order by r_id, times)
+group by r.r_name, o.user_id, o.r_id)
 
 select ro.r_name,
-	count(r_name) as times
+	count(distinct ro.user_id) as repeated_customers
 from resturant_order as ro
 join users as u
 on ro.user_id = u.user_id
 group by ro.r_name
-order by times desc;
+order by repeated_customers desc;
 
 
 -- 7. Month over month revenue growth of zomato
