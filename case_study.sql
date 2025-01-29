@@ -18,19 +18,6 @@ group by r_id, r.cuisine;
 
 -- 3. Find top restautant in terms of number of orders for a given month
 
-SELECT 
-    r.r_name,
-    COUNT(o.order_id) AS total_orders,
-    month(o.date) as month, 
-    RANK() OVER (PARTITION BY MONTH(o.date) ORDER BY COUNT(o.order_id) DESC) AS ranks
-FROM orders o
-JOIN resturants r 
-ON o.r_id = r.r_id
-GROUP BY r.r_name, month
-ORDER BY month, total_orders DESC;
-
--- after we rank then we can only get the rank 1 by month using with 
-
 with ranked as (
 	SELECT 
 		r.r_name,
@@ -118,12 +105,18 @@ order by times desc;
 
 -- 7. Month over month revenue growth of zomato
 
--- total revenue =  E (price per unit 1 * quantity1)+  (price per unit 2 * quantity2)+......
--- since we have the direct amount we must add all the amounts in a single month to calculate revenue of a month
-
-select month(date) as months, sum(amount) as revenue
-from orders
-group by months;
+select 
+    t.months,
+    t.revenue,
+    ((t.revenue - t.neww) / t.neww) * 100 as revenue_growth
+from (
+    select
+        month(date) as months,
+        SUM(amount) as revenue,
+        lag (SUM(amount)) over (order by month(date)) as neww
+    from orders
+    group by month(date)
+) as t;
 
 
 -- 8. Customer -> favorite food
@@ -164,7 +157,7 @@ select
 from last as l
 where l.ranking = 1
 order by l.user_id;
--- based on the number of orders of a specific food we can say that that particular food is the customers favorite food
+-- Based on the number of orders for a specific food item, we can say that, that food item is the customers favorite food
 
 
 
