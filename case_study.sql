@@ -8,6 +8,13 @@ left join orders as o
 on u.user_id = o.user_id
 where o.user_id is null ;
 
+output:
+| user_id | name    | email              |  
+|---------|---------|--------------------|  
+| 6       | Anupama | anupama@gmail.com  |  
+| 7       | Rishabh | rishabh@gmail.com  |  
+
+
 -- 2. Average Price/dish
 
 select m.r_id, r.cuisine , avg(m.price) as avg_price
@@ -15,6 +22,16 @@ from resturants  as r
 join menu as m
 on r.r_id = m.r_id
 group by r_id, r.cuisine;
+
+output:
+| r_id | cuisine      | avg_price |  
+|------|--------------|-----------|  
+| 1    | Italian      | 316.6667  |  
+| 2    | American     | 215.0000  |  
+| 3    | North Indian | 126.6667  |  
+| 4    | South Indian | 176.6667  |  
+| 5    | Chinese      | 216.6667  |  
+
 
 -- 3. Find top restautant in terms of number of orders for a given month
 
@@ -35,6 +52,14 @@ from ranked
 where ranks = 1
 order by month;
 
+output:
+| r_name     | month | total_orders |  
+|------------|-------|--------------|  
+| Dosa Plaza | 5     | 3            |  
+| kfc        | 6     | 3            |  
+| kfc        | 7     | 3            |  
+
+
 -- 4. restaurants with monthly sales > 400
 
 select r.r_name,
@@ -47,6 +72,21 @@ group by r_name, months
 HAVING total_sales > 400
 order by months, total_sales;
 
+output:
+| r_name     |total_sales | months |  
+|------------|------------|--------|  
+| kfc        | 645        | 5      |  
+| Dosa Plaza | 780        | 5      |  
+| dominos    | 1000       | 5      |  
+| box8       | 480        | 6      |  
+| dominos    | 950        | 6      |  
+| kfc        | 990        | 6      |  
+| box8       | 460        | 7      |  
+| China Town | 1050       | 7      |  
+| dominos    | 1100       | 7      |  
+| kfc        | 1935       | 7      |  
+
+	
 -- 5. Show all orders with order details for a particular customer in a particular date range
 
 with resturant_name as(
@@ -81,6 +121,15 @@ join food as f
 on r.f_id = f.f_id
 order by r.date;
 
+output:
+| user_id | name   | order_id | f_id | r_id | r_name  | f_name          | amount | date       |  
+|---------|--------|----------|------|------|---------|-----------------|--------|------------|  
+| 1       | Nitish | 1001     | 1    | 1    | dominos | Non-veg Pizza   | 550    | 2022-05-10 |  
+| 1       | Nitish | 1001     | 3    | 1    | dominos | Choco Lava Cake | 550    | 2022-05-10 |  
+| 1       | Nitish | 1002     | 3    | 2    | kfc     | Choco Lava Cake | 415    | 2022-05-26 |  
+| 1       | Nitish | 1002     | 4    | 2    | kfc     | Chicken Wings   | 415    | 2022-05-26 |  
+
+
 -- 6. Find restaurants with max repeated customers
 
 with resturant_order  as(
@@ -101,6 +150,15 @@ on ro.user_id = u.user_id
 group by ro.r_name
 order by repeated_customers desc;
 
+output:
+| r_name     | repeated_customers|  
+|------------|-------------------|  
+| dominos    | 4                 |  
+| kfc        | 4                 |  
+| Dosa Plaza | 3                 |  
+| box8       | 2                 |  
+| China Town | 2                 |  
+
 
 -- 7. Month over month revenue growth of zomato
 
@@ -117,7 +175,14 @@ from (
     group by month(date)
 ) as t;
 
+output:
+| months | revenue | revenue_growth|  
+|--------|---------|---------------|  
+| 5      | 2425    |               |  
+| 6      | 3220    | 32.7835       |  
+| 7      | 4845    | 50.4658       |  
 
+	
 -- 8. Customer -> favorite food
 
 with last as 
@@ -157,6 +222,16 @@ from last as l
 where l.ranking = 1
 order by l.user_id;
 -- Based on the number of orders for a specific food item, we can say that, that food item is the customers favorite food
+
+output:
+| user_id | name    | favourite_food    |  
+|---------|---------|-------------------|  
+| 1       | Nitish  | Choco Lava Cake   |  
+| 2       | Khushboo | Choco Lava Cake  |  
+| 3       | Vartika | Chicken Wings     |  
+| 4       | Ankit   | Schezwan Noodles  |  
+| 4       | Ankit   | Veg Manchurian    |  
+| 5       | Neha    | Choco Lava Cake   |  
 
 
 
