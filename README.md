@@ -16,6 +16,6 @@ SQL Techniques Used:
 Joins (INNER JOIN, LEFT JOIN)
 Group By, Aggregation functions (SUM, COUNT, AVG)
 Window functions (RANK(), PARTITION BY)
-Common Table Expressions (CTEs)
+Common Table Expressions (CTEs) and WITH function to simplify complex queries
 
 Goal: Provide insights to help improve customer engagement, track restaurant performance, and optimize menu offerings.
